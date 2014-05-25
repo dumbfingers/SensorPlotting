@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 19-May-2014 14:42:41
+% Last Modified by GUIDE v2.5 25-May-2014 17:04:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -79,19 +79,28 @@ function varargout = gui_OutputFcn(hObject, eventdata, handles)
 varargout{1} = handles.output;
 
 
-% --- Executes on button press in setTimeButton.
-function setTimeButton_Callback(hObject, eventdata, handles)
-% hObject    handle to setTimeButton (see GCBO)
+% --- Executes on button press in setStartButton.
+function setStartButton_Callback(hObject, eventdata, handles)
+% hObject    handle to setStartButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% preset to NOW
+dateNum = now;
+dateFormat = 'dd-mmm-yyyy HH:MM:SS';
+dateString = datestr(dateNum, dateFormat, 'local');
+% show the date chooser dialog
+handles.tStart = datestr(guiDatePicker(dateString));
 
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
+% --- Executes on button press in setEndButton.
+function setEndButton_Callback(hObject, eventdata, handles)
+% hObject    handle to setEndButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+dateNum = now;
+dateFormat = 'dd-mmm-yyyy HH:MM:SS';
+dateString = datestr(dateNum, dateFormat, 'local');
+handles.tEnd = datestr(guiDatePicker(dateString));
 
 % --- Executes on button press in pushbutton3.
 function pushbutton3_Callback(hObject, eventdata, handles)
@@ -145,6 +154,8 @@ handles.y1 = var_mat.accelerometer(:, 2);
 handles.y2 = var_mat.accelerometer(:, 3);
 handles.y3 = var_mat.accelerometer(:, 4);
 plot(handles.x, handles.y1, handles.x, handles.y2, handles.x, handles.y3);
+datetick('x','yyyy-mm-dd HH:MM:SS.FFF');
+
 
 
 % --- Executes during object creation, after setting all properties.
