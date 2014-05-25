@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 18-May-2014 13:18:31
+% Last Modified by GUIDE v2.5 19-May-2014 14:42:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,9 +43,6 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-% Defeine a Global value
-global sensor_Name;
-
 % --- Executes just before gui is made visible.
 function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -53,6 +50,12 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to gui (see VARARGIN)
+
+sensor_Name = 'String';
+handles.sensor = sensor_Name;
+filename = 'accelerometer_yaxi.mat';
+handles.mat = load(filename);
+% guidata(hObject, var_mat);
 
 % Choose default command line output for gui
 handles.output = hObject;
@@ -63,8 +66,7 @@ guidata(hObject, handles);
 % UIWAIT makes gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
-handles.sensor = sensor_Name;
-handles.accelerometer = load('accelerometer');
+
 
 % --- Outputs from this function are returned to the command line.
 function varargout = gui_OutputFcn(hObject, eventdata, handles) 
@@ -112,8 +114,9 @@ val = get(hObject, 'Value');
 
 switch str{val};
     case 'accelerometer'
-        handles.sensor = accelerometer;
-        handles.current_data = 
+%         handles.sensor = accelerometer;
+end
+%        handles.current_data = 
 
 
 % --- Executes during object creation, after setting all properties.
@@ -134,3 +137,20 @@ function plotButton_Callback(hObject, eventdata, handles)
 % hObject    handle to plotButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+var_mat = handles.mat;
+handles.x = var_mat.accelerometer(:, 1);
+handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
+handles.y1 = var_mat.accelerometer(:, 2);
+handles.y2 = var_mat.accelerometer(:, 3);
+handles.y3 = var_mat.accelerometer(:, 4);
+plot(handles.x, handles.y1, handles.x, handles.y2, handles.x, handles.y3);
+
+
+% --- Executes during object creation, after setting all properties.
+function axes_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to axes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: place code in OpeningFcn to populate axes
