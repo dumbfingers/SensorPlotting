@@ -53,9 +53,18 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % list the current dir files
 handles.matList = dir(fullfile('*.mat'));
+
+for i = 1:length(handles.matList)
+    filename{i} = handles.matList(i).name;
+end
+% populate the pop up menu
+set(handles.popup, 'String', filename);
+
 % filename = 'accelerometer_yaxi.mat';
 handles.mat = load(handles.matList(1).name);
 handles.sensorName = handles.matList(1).name;
+
+
 % Choose default command line output for gui
 handles.output = hObject;
 
@@ -153,6 +162,9 @@ function sensorPopupmenu_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+% pass the reference before populate the popup menu
+handles.popup = hObject;
+guidata(hObject, handles);
 
 
 % --- Executes on button press in plotButton.
