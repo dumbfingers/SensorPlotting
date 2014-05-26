@@ -77,7 +77,8 @@ function guiDatePicker_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to guiDatePicker (see VARARGIN)
 year = 2000:1:2020;
-dt = varargin{1}; %
+% dt = varargin{1}; %
+dt = datestr(now, 'dd-mmm-yyyy HH:MM:SS');
 if ~isempty(dt)
     [YYi, MMi, DDi, hhI, mmI, ssI] = datevec(dt);
     wo = find(year==YYi);

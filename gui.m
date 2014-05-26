@@ -86,21 +86,25 @@ function setStartButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % preset to NOW
-dateNum = now;
-dateFormat = 'dd-mmm-yyyy HH:MM:SS';
-dateString = datestr(dateNum, dateFormat, 'local');
+% dateNum = now;
+% dateFormat = 'dd-mmm-yyyy HH:MM:SS';
+% dateString = datestr(dateNum, dateFormat, 'local');
 % show the date chooser dialog
-handles.tStart = datestr(guiDatePicker(dateString));
+% handles.tStart = guiDatePicker(dateString);
+handles.tStart = guiDatePicker();
+
 
 % --- Executes on button press in setEndButton.
 function setEndButton_Callback(hObject, eventdata, handles)
 % hObject    handle to setEndButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-dateNum = now;
-dateFormat = 'dd-mmm-yyyy HH:MM:SS';
-dateString = datestr(dateNum, dateFormat, 'local');
-handles.tEnd = datestr(guiDatePicker(dateString));
+% dateNum = now;
+% dateFormat = 'dd-mmm-yyyy HH:MM:SS';
+% dateString = datestr(dateNum, dateFormat, 'local');
+% handles.tEnd = guiDatePicker(dateString);
+handles.tEnd = guiDatePicker();
+
 
 % --- Executes on button press in pushbutton3.
 function pushbutton3_Callback(hObject, eventdata, handles)
