@@ -51,12 +51,11 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to gui (see VARARGIN)
 
-sensor_Name = 'String';
-handles.sensor = sensor_Name;
-filename = 'accelerometer_yaxi.mat';
-handles.mat = load(filename);
-% guidata(hObject, var_mat);
-
+% list the current dir files
+handles.matList = dir(fullfile('*.mat'));
+% filename = 'accelerometer_yaxi.mat';
+handles.mat = load(handles.matList(1).name);
+handles.sensorName = handles.matList(1).name;
 % Choose default command line output for gui
 handles.output = hObject;
 
@@ -124,12 +123,23 @@ function sensorPopupmenu_Callback(hObject, eventdata, handles)
 
 str = get(hObject, 'String');
 val = get(hObject, 'Value');
-
-switch str{val};
-    case 'accelerometer'
-%         handles.sensor = accelerometer;
+% handles.mat = [];
+% handles.sensorName = [];
+switch val
+    case 1
+        handles.mat = load(handles.matList(1).name);
+        handles.sensorName = handles.matList(1).name
+    case 2
+        handles.mat = load(handles.matList(2).name);
+        handles.sensorName = handles.matList(2).name;
+    case 3
+        handles.mat = load(handles.matList(3).name);
+        handles.sensorName = handles.matList(3).name;
+    case 4
+        handles.mat = load(handles.matList(4).name);
+        handles.sensorName = handles.matList(4).name;
 end
-%        handles.current_data = 
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -152,11 +162,39 @@ function plotButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 var_mat = handles.mat;
-handles.x = var_mat.accelerometer(:, 1);
-handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
-handles.y1 = var_mat.accelerometer(:, 2);
-handles.y2 = var_mat.accelerometer(:, 3);
-handles.y3 = var_mat.accelerometer(:, 4);
+handles.x = [];
+handles.y1 = [];
+handles.y2 = [];
+handles.y3 = [];
+% switch handles.sensorName
+
+if strcmp(handles.sensorName, handles.matList(1).name)
+    handles.x = var_mat.accelerometer(:, 1);
+    handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
+    handles.y1 = var_mat.accelerometer(:, 2);
+    handles.y2 = var_mat.accelerometer(:, 3);
+    handles.y3 = var_mat.accelerometer(:, 4);
+    
+end
+
+if strcmp(handles.sensorName, handles.matList(2).name)
+    handles.x = var_mat.gyroscope(:, 1);
+    handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
+    handles.y1 = var_mat.gyroscope(:, 2);
+    handles.y2 = var_mat.gyroscope(:, 3);
+    handles.y3 = var_mat.gyroscope(:, 4);
+    
+end
+%     case strcmp(handles.sensorName, handles.matList(3).name)
+%     handles.x = var_mat.magnetometer(:, 1);
+%     handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
+%     handles.y1 = var_mat.magnetometer(:, 2);
+%     handles.y2 = var_mat.magnetometer(:, 3);
+%     handles.y3 = var_mat.magnetometer(:, 4);
+    
+% else if strcmp(handles.sensorName, handles.matList(4).name)
+% end
+
 plot(handles.x, handles.y1, handles.x, handles.y2, handles.x, handles.y3);
 datetick('x','yyyy-mm-dd HH:MM:SS.FFF');
 
