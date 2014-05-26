@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 25-May-2014 17:04:40
+% Last Modified by GUIDE v2.5 26-May-2014 14:16:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,6 +51,9 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to gui (see VARARGIN)
 
+% initialise the x axis time scales
+handles.tStart = -1;
+handles.tEnd = -1;
 % list the current dir files
 handles.matList = dir(fullfile('*.mat'));
 
@@ -99,7 +102,15 @@ function setStartButton_Callback(hObject, eventdata, handles)
 % dateString = datestr(dateNum, dateFormat, 'local');
 % show the date chooser dialog
 % handles.tStart = guiDatePicker(dateString);
-handles.tStart = guiDatePicker();
+tStart = guiDatePicker();
+
+timeList = handles.mat.accelerometer(:, 1);
+% convert the selected time to unix timestamp
+timeSelected = (tStart - datenum(1970, 1, 1)) * 1000 * 86400;
+% find the current time stamp
+handles.tStart = Binary_Search(timeList, 1, length(timeList), timeSelected);
+disp(handles.tStart);
+guidata(hObject, handles);
 
 
 % --- Executes on button press in setEndButton.
@@ -111,7 +122,15 @@ function setEndButton_Callback(hObject, eventdata, handles)
 % dateFormat = 'dd-mmm-yyyy HH:MM:SS';
 % dateString = datestr(dateNum, dateFormat, 'local');
 % handles.tEnd = guiDatePicker(dateString);
-handles.tEnd = guiDatePicker();
+tEnd = guiDatePicker();
+
+timeList = handles.mat.accelerometer(:, 1);
+
+timeSelected = (tEnd - datenum(1970, 1, 1)) * 1000 * 86400;
+
+handles.tEnd = Binary_Search(timeList, 1, length(timeList), timeSelected);
+disp(handles.tEnd);
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton3.
@@ -209,7 +228,12 @@ end
 
 plot(handles.x, handles.y1, handles.x, handles.y2, handles.x, handles.y3);
 datetick('x','yyyy-mm-dd HH:MM:SS.FFF');
+hleg1 = legend('x', 'y', 'z');
+grid on;
 
+if (handles.tStart ~= -1) && (handles.tEnd ~= -1)
+    xlim([handles.x(handles.tStart), handles.x(handles.tEnd)]);
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -219,3 +243,12 @@ function axes_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: place code in OpeningFcn to populate axes
+
+
+% --- Executes on mouse press over axes background.
+function axes_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to axes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% pt = get(hObject, 'CurrentPoint');
+% display(pt);
