@@ -47,7 +47,7 @@ function varargout = guiDatePicker(varargin)
 
 % Edit the above text to modify the response to help guiDatePicker
 
-% Last Modified by GUIDE v2.5 21-Apr-2011 12:54:26
+% Last Modified by GUIDE v2.5 26-May-2014 11:15:08
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,6 +85,7 @@ if ~isempty(dt)
     set(handles.Month,'Value',MMi);
     set(handles.Hours,'String',num2str(hhI));
     set(handles.Minutes,'String',num2str(mmI));
+    set(handles.Seconds,'String',num2str(ssI));
 end
 
 
@@ -291,9 +292,11 @@ if isfield(handles,'Day')
     DD = handles.Day;
     hh = str2double(get(handles.Hours,'String'));
     mm = str2double(get(handles.Minutes,'String'));
-
+    % Add seconds
+    ss = str2double(get(handles.Seconds,'String'));
+    
     % x = datenum([YY MM DD hh mm 0])
-    handles.output = datenum([YY MM DD hh mm 0]);
+    handles.output = datenum([YY MM DD hh mm ss]);
     % Close handles structure
     guidata(hObject, handles);
 
@@ -362,6 +365,29 @@ function Minutes_Callback(hObject, eventdata, handles)
 % --- Executes during object creation, after setting all properties.
 function Minutes_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to Minutes (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function Seconds_Callback(hObject, eventdata, handles)
+% hObject    handle to Seconds (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of Seconds as text
+%        str2double(get(hObject,'String')) returns contents of Seconds as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function Seconds_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to Seconds (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
