@@ -54,18 +54,31 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % initialise the x axis time scales
 handles.tStart = -1;
 handles.tEnd = -1;
-% list the current dir files
-handles.matList = dir(fullfile('*.mat'));
 
-for i = 1:length(handles.matList)
-    filename{i} = handles.matList(i).name;
+% get the current folder
+handles.folderList = dir(fullfile('../Sensor_data/'));
+% get rid of the hidden files and '.DS_Store' file
+handles.folderList(strncmp({handles.folderList.name}, '.', 1)) = [];
+
+for i = 1:length(handles.folderList)
+    folderName{i} = handles.folderList(i).name;
 end
-% populate the pop up menu
-set(handles.popup, 'String', filename);
 
-% filename = 'accelerometer_yaxi.mat';
-handles.mat = load(handles.matList(1).name);
-handles.sensorName = handles.matList(1).name;
+% populate the pop up menu
+set(handles.popup, 'String', folderName);
+
+% list the current dir files
+% handles.matList = dir(fullfile('*.mat'));
+
+% for i = 1:length(handles.matList)
+%     filename{i} = handles.matList(i).name;
+% end
+% populate the pop up menu
+% set(handles.popup, 'String', filename);
+
+% handles.mat = load(handles.matList(1).name);
+% handles.sensorName = handles.matList(1).name;
+
 
 
 % Choose default command line output for gui
@@ -155,17 +168,18 @@ val = get(hObject, 'Value');
 % handles.sensorName = [];
 switch val
     case 1
-        handles.mat = load(handles.matList(1).name);
-        handles.sensorName = handles.matList(1).name
+        handles.matList = load(dir(fullfile(handles.folderList(1).name, '*.mat')));
+%         handles.mat = load(handles.matList(1).name);
+%         handles.sensorName = handles.matList(1).name
     case 2
-        handles.mat = load(handles.matList(2).name);
-        handles.sensorName = handles.matList(2).name;
+%         handles.mat = load(handles.matList(2).name);
+%         handles.sensorName = handles.matList(2).name;
     case 3
-        handles.mat = load(handles.matList(3).name);
-        handles.sensorName = handles.matList(3).name;
+%         handles.mat = load(handles.matList(3).name);
+%         handles.sensorName = handles.matList(3).name;
     case 4
-        handles.mat = load(handles.matList(4).name);
-        handles.sensorName = handles.matList(4).name;
+%         handles.mat = load(handles.matList(4).name);
+%         handles.sensorName = handles.matList(4).name;
 end
 guidata(hObject, handles);
 
@@ -227,13 +241,18 @@ end
 % end
 
 plot(handles.x, handles.y1, handles.x, handles.y2, handles.x, handles.y3);
-datetick('x','yyyy-mm-dd HH:MM:SS.FFF');
-hleg1 = legend('x', 'y', 'z');
-grid on;
 
 if (handles.tStart ~= -1) && (handles.tEnd ~= -1)
     xlim([handles.x(handles.tStart), handles.x(handles.tEnd)]);
+    set(gca, 'XTick', [handles.x(handles.tStart):0.01:handles.x(handles.tEnd)]);
 end
+
+hleg1 = legend('x', 'y', 'z');
+grid on;
+
+datetick('x','yyyy-mm-dd HH:MM:SS.FFF', 'keeplimits', 'keepticks');
+xticklabel_rotate;
+
 
 
 % --- Executes during object creation, after setting all properties.
