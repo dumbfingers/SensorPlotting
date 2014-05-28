@@ -253,21 +253,49 @@ handles.y13 = [];
     
 % else if strcmp(handles.sensorName, handles.matList(4).name)
 % end
-subplot(2, 1, 1);
+
+% Upper plot
+plot1 = subplot(2, 1, 1);
+
 plot(handles.x0, handles.y01, handles.x0, handles.y02, handles.x0, handles.y03);
-subplot(2, 1, 2);
+
+if (handles.tStart ~= -1) && (handles.tEnd ~= -1)
+    xlim([handles.x0(handles.tStart), handles.x0(handles.tEnd)]);
+    % hide the xtick label on the upper graph
+    set(gca, 'XTick', [handles.x0(handles.tStart):0.01:handles.x0(handles.tEnd)]);
+end
+grid on;
+hleg1 = legend('x', 'y', 'z');
+datetick('x','', 'keeplimits', 'keepticks');
+
+% set(gca, 'XTickLabel', {[]});
+
+% xticklabel_rotate;
+
+% Lower plot
+plot2 = subplot(2, 1, 2);
 plot(handles.x1, handles.y11, handles.x1, handles.y12, handles.x1, handles.y13);
 
 if (handles.tStart ~= -1) && (handles.tEnd ~= -1)
-    xlim([handles.x(handles.tStart), handles.x(handles.tEnd)]);
-    set(gca, 'XTick', [handles.x(handles.tStart):0.01:handles.x(handles.tEnd)]);
+    xlim([handles.x1(handles.tStart), handles.x1(handles.tEnd)]);
+    set(gca, 'XTick', [handles.x1(handles.tStart):0.01:handles.x1(handles.tEnd)]);
 end
 
-hleg1 = legend('x', 'y', 'z');
 grid on;
 
 datetick('x','yyyy-mm-dd HH:MM:SS.FFF', 'keeplimits', 'keepticks');
 xticklabel_rotate;
+
+%# find current position [x,y,width,height]
+pos2 = get(plot2,'Position');
+pos1 = get(plot1,'Position');
+
+%# set width of second axes equal to first
+pos1(3) = pos2(3);
+pos2(4) = pos1(4);
+set(plot1,'Position',pos1);
+% pos2(2) = pos2(2) - 1;
+set(plot2,'Position',pos2);
 
 
 
