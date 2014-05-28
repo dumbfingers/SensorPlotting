@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 26-May-2014 14:16:59
+% Last Modified by GUIDE v2.5 28-May-2014 11:20:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,9 +54,9 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % initialise the x axis time scales
 handles.tStart = -1;
 handles.tEnd = -1;
-
+handles.dataPath = '../Sensor_data/';
 % get the current folder
-handles.folderList = dir(fullfile('../Sensor_data/'));
+handles.folderList = dir(fullfile(handles.dataPath));
 % get rid of the hidden files and '.DS_Store' file
 handles.folderList(strncmp({handles.folderList.name}, '.', 1)) = [];
 
@@ -117,7 +117,7 @@ function setStartButton_Callback(hObject, eventdata, handles)
 % handles.tStart = guiDatePicker(dateString);
 tStart = guiDatePicker();
 
-timeList = handles.mat.accelerometer(:, 1);
+timeList = accelerometer.M(:, 1);
 % convert the selected time to unix timestamp
 timeSelected = (tStart - datenum(1970, 1, 1)) * 1000 * 86400;
 % find the current time stamp
@@ -137,7 +137,7 @@ function setEndButton_Callback(hObject, eventdata, handles)
 % handles.tEnd = guiDatePicker(dateString);
 tEnd = guiDatePicker();
 
-timeList = handles.mat.accelerometer(:, 1);
+timeList = accelerometer.M(:, 1);
 
 timeSelected = (tEnd - datenum(1970, 1, 1)) * 1000 * 86400;
 
@@ -164,17 +164,22 @@ function sensorPopupmenu_Callback(hObject, eventdata, handles)
 
 str = get(hObject, 'String');
 val = get(hObject, 'Value');
+
+
 % handles.mat = [];
 % handles.sensorName = [];
 switch val
     case 1
-        handles.matList = load(dir(fullfile(handles.folderList(1).name, '*.mat')));
+        handles.path = strcat(handles.dataPath, handles.folderList(1).name);
+
 %         handles.mat = load(handles.matList(1).name);
 %         handles.sensorName = handles.matList(1).name
     case 2
+        handles.path = strcat(handles.dataPath, handles.folderList(2).name);
 %         handles.mat = load(handles.matList(2).name);
 %         handles.sensorName = handles.matList(2).name;
     case 3
+        handles.path = strcat(handles.dataPath, handles.folderList(3).name);
 %         handles.mat = load(handles.matList(3).name);
 %         handles.sensorName = handles.matList(3).name;
     case 4
@@ -206,30 +211,39 @@ function plotButton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-var_mat = handles.mat;
-handles.x = [];
-handles.y1 = [];
-handles.y2 = [];
-handles.y3 = [];
+% var_mat = [];
+handles.x0 = [];
+handles.y01 = [];
+handles.y02 = [];
+handles.y03 = [];
+
+handles.x1 = [];
+handles.y11 = [];
+handles.y12 = [];
+handles.y13 = [];
 % switch handles.sensorName
 
-if strcmp(handles.sensorName, handles.matList(1).name)
-    handles.x = var_mat.accelerometer(:, 1);
-    handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
-    handles.y1 = var_mat.accelerometer(:, 2);
-    handles.y2 = var_mat.accelerometer(:, 3);
-    handles.y3 = var_mat.accelerometer(:, 4);
+% if strcmp('accelerometer', handles.matList(1).name)
     
-end
+    accelerometer = load(fullfile(handles.path, 'accelerometer.mat'));
+    handles.x0 = accelerometer.M(:, 1);
+    handles.x0 = (handles.x0 / 86400 / 1000) + datenum(1970,1,1);
+    handles.y01 = accelerometer.M(:, 2);
+    handles.y02 = accelerometer.M(:, 3);
+    handles.y03 = accelerometer.M(:, 4);
+    
+% end
 
-if strcmp(handles.sensorName, handles.matList(2).name)
-    handles.x = var_mat.gyroscope(:, 1);
-    handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
-    handles.y1 = var_mat.gyroscope(:, 2);
-    handles.y2 = var_mat.gyroscope(:, 3);
-    handles.y3 = var_mat.gyroscope(:, 4);
+% if strcmp('gyroscope', handles.matList(2).name)
     
-end
+    gyroscope = load(fullfile(handles.path, 'gyroscope.mat'));
+    handles.x1 = gyroscope.M(:, 1);
+    handles.x1 = (handles.x1 / 86400 / 1000) + datenum(1970,1,1);
+    handles.y11 = gyroscope.M(:, 2);
+    handles.y12 = gyroscope.M(:, 3);
+    handles.y13 = gyroscope.M(:, 4);
+    
+% end
 %     case strcmp(handles.sensorName, handles.matList(3).name)
 %     handles.x = var_mat.magnetometer(:, 1);
 %     handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
@@ -239,8 +253,10 @@ end
     
 % else if strcmp(handles.sensorName, handles.matList(4).name)
 % end
-
-plot(handles.x, handles.y1, handles.x, handles.y2, handles.x, handles.y3);
+subplot(2, 1, 1);
+plot(handles.x0, handles.y01, handles.x0, handles.y02, handles.x0, handles.y03);
+subplot(2, 1, 2);
+plot(handles.x1, handles.y11, handles.x1, handles.y12, handles.x1, handles.y13);
 
 if (handles.tStart ~= -1) && (handles.tEnd ~= -1)
     xlim([handles.x(handles.tStart), handles.x(handles.tEnd)]);
