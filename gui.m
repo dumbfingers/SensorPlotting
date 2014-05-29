@@ -221,38 +221,34 @@ handles.x1 = [];
 handles.y11 = [];
 handles.y12 = [];
 handles.y13 = [];
-% switch handles.sensorName
 
-% if strcmp('accelerometer', handles.matList(1).name)
-    
-    accelerometer = load(fullfile(handles.path, 'accelerometer.mat'));
-    handles.x0 = accelerometer.M(:, 1);
-    handles.x0 = (handles.x0 / 86400 / 1000) + datenum(1970,1,1);
-    handles.y01 = accelerometer.M(:, 2);
-    handles.y02 = accelerometer.M(:, 3);
-    handles.y03 = accelerometer.M(:, 4);
-    
-% end
+accelerometer = load(fullfile(handles.path, 'accelerometer.mat'));
+handles.x0 = accelerometer.M(:, 1);
+handles.x0 = (handles.x0 / 86400 / 1000) + datenum(1970,1,1);
+handles.y01 = accelerometer.M(:, 2);
+handles.y02 = accelerometer.M(:, 3);
+handles.y03 = accelerometer.M(:, 4);
 
-% if strcmp('gyroscope', handles.matList(2).name)
-    
-    gyroscope = load(fullfile(handles.path, 'gyroscope.mat'));
-    handles.x1 = gyroscope.M(:, 1);
-    handles.x1 = (handles.x1 / 86400 / 1000) + datenum(1970,1,1);
-    handles.y11 = gyroscope.M(:, 2);
-    handles.y12 = gyroscope.M(:, 3);
-    handles.y13 = gyroscope.M(:, 4);
-    
-% end
-%     case strcmp(handles.sensorName, handles.matList(3).name)
-%     handles.x = var_mat.magnetometer(:, 1);
-%     handles.x = (handles.x / 86400 / 1000) + datenum(1970,1,1);
-%     handles.y1 = var_mat.magnetometer(:, 2);
-%     handles.y2 = var_mat.magnetometer(:, 3);
-%     handles.y3 = var_mat.magnetometer(:, 4);
-    
-% else if strcmp(handles.sensorName, handles.matList(4).name)
-% end
+% check if gyroscope.mat exists
+% gyroscope = [];
+% if (exist(fullfile(handles.path, 'gyroscope.mat'), 'file') == 2)
+%     
+%     gyroscope = load(fullfile(handles.path, 'gyroscope.mat'));
+%     
+% else if (exist(fullfile(handles.path, 'gyroscope.mat'), 'file') == 0)
+%         
+%         gyroscope = load(fullfile(handles.path, 'rotation_vector.mat'));
+%         
+%     end
+
+% gyroscope may not be equipped on every devices, but rotation_vector does
+% exist on every devices.
+rotation_vector = load(fullfile(handles.path, 'rotation_vector.mat')); 
+handles.x1 = rotation_vector.M(:, 1);
+handles.x1 = (handles.x1 / 86400 / 1000) + datenum(1970,1,1);
+handles.y11 = rotation_vector.M(:, 2);
+handles.y12 = rotation_vector.M(:, 3);
+handles.y13 = rotation_vector.M(:, 4);
 
 % Upper plot
 plot1 = subplot(2, 1, 1);
@@ -265,12 +261,8 @@ if (handles.tStart ~= -1) && (handles.tEnd ~= -1)
     set(gca, 'XTick', [handles.x0(handles.tStart):0.01:handles.x0(handles.tEnd)]);
 end
 grid on;
-hleg1 = legend('x', 'y', 'z');
+legend('x', 'y', 'z');
 datetick('x','', 'keeplimits', 'keepticks');
-
-% set(gca, 'XTickLabel', {[]});
-
-% xticklabel_rotate;
 
 % Lower plot
 plot2 = subplot(2, 1, 2);
@@ -294,7 +286,6 @@ pos1 = get(plot1,'Position');
 pos1(3) = pos2(3);
 pos2(4) = pos1(4);
 set(plot1,'Position',pos1);
-% pos2(2) = pos2(2) - 1;
 set(plot2,'Position',pos2);
 
 
