@@ -1,3 +1,7 @@
+% L - list you want to perform the search
+% a - the first element of the search range
+% b - the last element of the search range
+% x - the element you want to search
 function findD = Binary_Search(L,a,b,x)
 %BINARY_SEARCH Summary of this function goes here
 %   Detailed explanation goes here
